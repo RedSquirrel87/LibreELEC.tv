@@ -60,10 +60,11 @@ index da46973..4173d93 100644
    pVideoPicture->iDisplayWidth  = pVideoPicture->iWidth;
    pVideoPicture->iDisplayHeight = pVideoPicture->iHeight;
    if (m_aspect_ratio > 1.0 && !m_hints.forced_aspect)
-@@ -520,6 +533,24 @@ void CDVDVideoCodecAmlogic::FrameRateTracking(uint8_t *pData, int iSize, double
+@@ -470,4 +498,22 @@
+     }
      return;
    }
- 
++
 +  // h264 aspect ratio handling
 +  if (m_h264_sequence)
 +  {
@@ -81,10 +82,7 @@ index da46973..4173d93 100644
 +      m_hints.aspect   = m_h264_sequence->ratio;
 +    }
 +  }
-+
-   // everything else
-   FrameQueuePush(dts, pts);
- 
+ }
 diff --git a/xbmc/cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAmlogic.h b/xbmc/cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAmlogic.h
 index 9e57295..d519d28 100644
 --- a/xbmc/cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAmlogic.h

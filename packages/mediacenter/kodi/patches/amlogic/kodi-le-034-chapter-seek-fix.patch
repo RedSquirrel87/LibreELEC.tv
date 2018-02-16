@@ -2,15 +2,6 @@ diff --git a/xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemuxFFmpeg.cpp b/xbmc/cores/
 index 31e62ad..7f34805 100644
 --- a/xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemuxFFmpeg.cpp
 +++ b/xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemuxFFmpeg.cpp
-@@ -1146,6 +1146,8 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double *startpts)
-   if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE && !ismp3 && !m_bSup)
-     seek_pts += m_pFormatContext->start_time;
- 
-+  CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDDemuxFFmpeg::%s - seek pts:%0.3f backwards:%d start_time:%0.3f",
-+             __FUNCTION__, (double)seek_pts / AV_TIME_BASE, backwards, (double)(m_pFormatContext->start_time) / AV_TIME_BASE);
-   int ret;
-   {
-     CSingleLock lock(m_critSection);
 @@ -1177,7 +1179,7 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double *startpts)
    if(m_currentPts == DVD_NOPTS_VALUE)
      CLog::Log(LOGDEBUG, "%s - unknown position after seek", __FUNCTION__);
@@ -20,22 +11,8 @@ index 31e62ad..7f34805 100644
  
    // in this case the start time is requested time
    if (startpts)
-@@ -1772,6 +1774,7 @@ int64_t CDVDDemuxFFmpeg::GetChapterPos(int chapterIdx)
+@@ -1799,7 +1799,20 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
  
- bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
- {
-+  CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::%s - Seeking chapter:%d startpts:%p ", __FUNCTION__, chapter, startpts);
-   if(chapter < 1)
-     chapter = 1;
- 
-@@ -1795,11 +1798,25 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
-     return false;
- 
-   if(chapter < 1 || chapter > (int)m_pFormatContext->nb_chapters)
-+{  CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::%s - wrong chapter:%d max:%d", __FUNCTION__, chapter, (int)m_pFormatContext->nb_chapters);
-     return false;
--
-+}
    AVChapter *ch = m_pFormatContext->chapters[chapter-1];
    double dts = ConvertTimestamp(ch->start, ch->time_base.den, ch->time_base.num);
 -  return SeekTime(DVD_TIME_TO_MSEC(dts), true, startpts);
